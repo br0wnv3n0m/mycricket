@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+  --color-pitch-950: #050810;
+  --color-pitch-900: #0a0f1e;
+  --color-pitch-800: #111a30;
+  --color-pitch-700: #1b2745;
+  --color-accent-400: #38e8c6;
+  --color-accent-500: #14d4aa;
+  --color-flame-400: #ff7a59;
+  --color-flame-500: #f4512c;
+  --font-display: "Outfit", system-ui, sans-serif;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(20, 212, 170, 0.08), transparent 60%),
+    radial-gradient(1000px 500px at -10% 110%, rgba(244, 81, 44, 0.07), transparent 60%),
+    var(--color-pitch-950);
+  color: #e6ecf5;
+  min-height: 100vh;
+  font-family: var(--font-display);
+}
+
+/* Glass card */
+.glass {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(14px);
+  border-radius: 1rem;
+}
+
+.glass-hover {
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.glass-hover:hover {
+  transform: translateY(-3px);
+  border-color: rgba(56, 232, 198, 0.35);
+  box-shadow: 0 12px 40px -12px rgba(20, 212, 170, 0.25);
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #38e8c6, #7dd3fc 55%, #ff9d7a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Live pulse dot */
+.live-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #ff4d4d;
+}
+.live-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 77, 77, 0.6);
+  animation: livePulse 1.6s ease-out infinite;
+}
+@keyframes livePulse {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+}

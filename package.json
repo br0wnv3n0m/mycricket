@@ -1,0 +1,31 @@
+{
+  "name": "mycricket",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "index": "node scripts/build-index.mjs",
+    "sync": "node scripts/sync-live.mjs",
+    "sync-data": "node scripts/sync-cricsheet.mjs"
+  },
+  "dependencies": {
+    "cheerio": "^1.2.0",
+    "framer-motion": "^12.0.0",
+    "hls.js": "^1.7.1",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "recharts": "^2.15.0"
+  },
+  "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.15.13",
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.0"
+  }
+}
