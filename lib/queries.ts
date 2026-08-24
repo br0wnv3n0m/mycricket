@@ -1,4 +1,5 @@
 import "server-only";
+import matchesIndex from "../data/matches.json";
 import fs from "node:fs";
 import path from "node:path";
 import { cache } from "react";
@@ -8,13 +9,9 @@ const ROOT = process.cwd();
 const DATA_DIR = path.join(ROOT, "data");
 
 export const getAllMatches = cache((): MatchSummary[] => {
-  const p = path.join(DATA_DIR, "matches.json");
-  if (!fs.existsSync(p)) return [];
-  try {
-    return JSON.parse(fs.readFileSync(p, "utf8")) as MatchSummary[];
-  } catch {
-    return [];
-  }
+  // Statically bundled at build time so it works in serverless environments
+  // (Netlify functions cannot read arbitrary files from disk at runtime).
+  return matchesIndex as unknown as MatchSummary[];
 });
 
 export const getFixtures = cache((): LiveMatch[] => {

@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2026-08-23T23:26:44.025Z",
+  "counts": {
+    "ipl": {
+      "total": 1243,
+      "indexed": 1243,
+      "failed": 0
+    },
+    "odis": {
+      "total": 3176,
+      "indexed": 3176,
+      "failed": 0
+    },
+    "t20s": {
+      "total": 5649,
+      "indexed": 5649,
+      "failed": 0
+    },
+    "tests": {
+      "total": 914,
+      "indexed": 914,
+      "failed": 0
+    }
+  },
+  "total": 10993
+}

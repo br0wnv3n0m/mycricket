@@ -3,6 +3,7 @@ node_modules/
 out/
 # Raw Cricsheet datasets stay local-only (served from the data branch in production)
 Data/
+!data/
 data/live-fixtures.json
 data/live-synced.json
 *.log
