@@ -38,6 +38,12 @@ export interface CricbuzzLiveMatch {
   teamCodes: [string, string];
 }
 
+/** A resolved Cricbuzz match reference (id + slug for building page URLs) */
+export interface CricbuzzMatchRef {
+  id: string;
+  slug: string;
+}
+
 /** Scrape the live-scores page for currently live/recent match links */
 export async function getLiveMatches(): Promise<CricbuzzLiveMatch[]> {
   const html = await fetchHtml("https://www.cricbuzz.com/cricket-match/live-scores");
@@ -88,8 +94,8 @@ function codesFor(teamNames: string[]): string[] {
   return teamNames.map((t) => TEAM_CODE_MAP[normalize(t)] ?? normalize(t).slice(0, 3));
 }
 
-/** Find the Cricbuzz match id matching a pair of team names */
-export async function findCricbuzzId(teams: string[]): Promise<string | null> {
+/** Find the Cricbuzz match (id + slug) matching a pair of team names */
+export async function findCricbuzzMatch(teams: string[]): Promise<CricbuzzMatchRef | null> {
   const wanted = codesFor(teams);
   const matches = await getLiveMatches();
   for (const m of matches) {
@@ -98,15 +104,20 @@ export async function findCricbuzzId(teams: string[]): Promise<string | null> {
       (a === wanted[0] && b === wanted[1]) ||
       (a === wanted[1] && b === wanted[0])
     ) {
-      return m.id;
+      return { id: m.id, slug: m.slug };
     }
   }
   // fallback: substring match on slug
   for (const m of matches) {
     const s = m.slug.replace(/-/g, "");
-    if (wanted.every((c) => s.includes(c))) return m.id;
+    if (wanted.every((c) => s.includes(c))) return { id: m.id, slug: m.slug };
   }
   return null;
+}
+
+/** Find the Cricbuzz match id matching a pair of team names */
+export async function findCricbuzzId(teams: string[]): Promise<string | null> {
+  return (await findCricbuzzMatch(teams))?.id ?? null;
 }
 
 /** Fetch and parse a full scorecard (all innings) from a Cricbuzz scorecard page */
@@ -121,6 +132,21 @@ export async function getCommentary(cricbuzzId: string): Promise<CommentaryBall[
   const html = await fetchHtml(`https://www.cricbuzz.com/live-cricket-commentary/${cricbuzzId}`);
   if (!html) return null;
   return parseCommentaryHtml(html);
+}
+
+/**
+ * Fetch the Cricbuzz match page and extract the toss result,
+ * e.g. "Australia won the toss & elected to field".
+ * Returns null when unavailable (page fetch failure or markup change).
+ */
+export async function getTossInfo(ref: CricbuzzMatchRef): Promise<{ winner: string; decision: string } | null> {
+  const html = await fetchHtml(`https://www.cricbuzz.com/live-cricket-scores/${ref.id}/${ref.slug}`);
+  if (!html) return null;
+  const m = html.match(
+    /([A-Za-z][A-Za-z .&']*?)\s+won the toss\s+(?:and|&)\s+elected to\s+(bat|bowl|field)/i,
+  );
+  if (!m) return null;
+  return { winner: m[1].trim(), decision: m[2].toLowerCase() };
 }
 
 /** Fetch commentary page and return both ball-by-ball and the live match-state snapshot */

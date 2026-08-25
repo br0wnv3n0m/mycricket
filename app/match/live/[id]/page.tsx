@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getLiveData } from "@/lib/live";
-import { findCricbuzzId, getScorecard, getCommentary, getLiveState } from "@/lib/cricbuzz";
+import { findCricbuzzMatch, getScorecard, getCommentary, getLiveState, getTossInfo } from "@/lib/cricbuzz";
 import { LiveMatchDetail } from "@/components/LiveMatchDetail";
 import { MatchTabs, isMatchTab } from "@/components/MatchTabs";
 import { WatchTab } from "@/components/WatchTab";
@@ -47,17 +47,23 @@ export default async function LiveMatchPage({
   let innings = null;
   let commentary = null;
   let snapshot = null;
+  let toss = null;
   try {
-    const cbId = await findCricbuzzId(match.teams);
-    if (cbId) {
-      if (activeTab === "scorecard") innings = await getScorecard(cbId);
-      else if (activeTab === "commentary") commentary = await getCommentary(cbId);
+    const cbRef = await findCricbuzzMatch(match.teams);
+    if (cbRef) {
+      if (activeTab === "scorecard") innings = await getScorecard(cbRef.id);
+      else if (activeTab === "commentary") commentary = await getCommentary(cbRef.id);
       else {
         // summary tab: fetch commentary page once for both the snapshot and
-        // recent balls (used for boundary counts + recent-overs strip)
-        const state = await getLiveState(cbId);
+        // recent balls (used for boundary counts + recent-overs strip),
+        // plus the match page for the toss result
+        const [state, tossInfo] = await Promise.all([
+          getLiveState(cbRef.id),
+          getTossInfo(cbRef),
+        ]);
         snapshot = state?.snapshot ?? null;
         commentary = state?.balls ?? null;
+        toss = tossInfo;
       }
     }
   } catch {
@@ -73,6 +79,7 @@ export default async function LiveMatchPage({
         innings={activeTab === "scorecard" ? innings : undefined}
         commentary={commentary}
         snapshot={snapshot}
+        toss={toss}
       />
     </div>
   );

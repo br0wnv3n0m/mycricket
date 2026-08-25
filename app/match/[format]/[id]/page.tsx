@@ -5,7 +5,7 @@ import { parseMatchDetail, parseCommentaryEvents } from "@/lib/cricsheet";
 import { WormChart } from "@/components/WormChart";
 import { Scorecard } from "@/components/Scorecard";
 import { CommentaryFeed } from "@/components/CommentaryFeed";
-import { MatchSummaryCards } from "@/components/MatchSummaryCards";
+import { PastMatchSummary } from "@/components/PastMatchSummary";
 import { MatchTabs, isMatchTab } from "@/components/MatchTabs";
 import { FORMAT_LABELS } from "@/lib/types";
 
@@ -179,9 +179,9 @@ export default async function MatchPage({
         )
       ) : (
         <>
-          {/* ESPNcricinfo-style per-innings summary cards */}
+          {/* Live-style compact summary */}
           {detail && detail.innings.length > 0 ? (
-            <MatchSummaryCards innings={detail.innings} />
+            <PastMatchSummary detail={detail} />
           ) : (
             <div className="glass p-8 text-center text-slate-400">
               Match summary is not available for this match yet.

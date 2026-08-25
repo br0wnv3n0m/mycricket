@@ -31,12 +31,14 @@ export function LiveMatchDetail({
   innings,
   commentary,
   snapshot,
+  toss,
 }: {
   match: LiveMatch;
   activeTab: "summary" | "scorecard" | "commentary";
   innings?: InningsDetail[] | null;
   commentary?: CommentaryBall[] | null;
   snapshot?: LiveSnapshot | null;
+  toss?: { winner: string; decision: string } | null;
 }) {
   const router = useRouter();
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
@@ -118,6 +120,11 @@ export function LiveMatchDetail({
           <p className="mt-4 font-medium text-accent-400">{match.status || (isUpcoming ? "Not started yet" : "")}</p>
 
           <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-slate-400">
+            {toss && (
+              <span>
+                🪙 {toss.winner} won the toss and chose to {toss.decision}
+              </span>
+            )}
             {match.startTime && <span>📅 {formatDateTime(match.startTime)}</span>}
             {isLive && lastRefresh && (
               <motion.span key={lastRefresh.toISOString()} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>

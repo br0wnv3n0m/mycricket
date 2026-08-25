@@ -2,9 +2,10 @@ node_modules/
 .next/
 out/
 # Raw Cricsheet datasets stay local-only (served from the data branch in production)
-Data/
-!data/
-data/live-fixtures.json
-data/live-synced.json
+# NOTE: Data/* (not Data/) so case-insensitive Windows git does not also
+# ignore the lowercase data/ index folder; index files re-included explicitly.
+Data/*
+!data/matches.json
+!data/meta.json
 *.log
 .env*
